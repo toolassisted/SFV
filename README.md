@@ -1,3 +1,3 @@
 # SFV
 
-LOL U C WIKI https://github.com/toolassisted/SFV/wiki
+LOL U C https://github.com/toolassisted/SFV/wiki
