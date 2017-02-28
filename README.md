@@ -1,3 +1,3 @@
 # SFV
 
-LOL U C https://github.com/toolassisted/SFV/
+LOL U C https://toolassisted.github.io/SFV
