@@ -74,7 +74,7 @@
 </head>
 <body>
 <nav id="CLIPNAV" class="CLIPNAV"></nav>
-<main id="CLIPMAIN">U C <a href="https://www.twitch.tv/capcomfighters/clips">https://www.twitch.tv/capcomfighters/clips</a> TOP 24H SORT TIME
+<main id="CLIPMAIN">U C <a href="https://www.twitch.tv/capcomfighters/clips">https://www.twitch.tv/capcomfighters/clips</a> TOP 24H + TREND SORT TIME
 <div id="CLIPDIV"></div>
 </main>
 <script type="text/javascript">
@@ -86,34 +86,50 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period
 	.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
 	.response(function(xhr) { return JSON.parse(xhr.responseText); })
 	.get(function(err,data){
-		data.clips.forEach(function(d,i){
-			if (d.vod) {
-				var timestamp = d.vod.url.split("t=")[1];
-				var th = timestamp.match(/((\d+)h)/); if (th && th.length > 2) th = +th[2]; else th = 0
-				var tm = timestamp.match(/((\d+)m)/); if (tm && tm.length > 2) tm = +tm[2]; else tm = 0
-				var ts = timestamp.match(/((\d+)s)/); if (ts && ts.length > 2) ts = +ts[2]; else ts = 0
-				d.vod.th = th;
-				d.vod.tm = tm;
-				d.vod.ts = ts;
-				d.vod.timestamp = PAD2(th)+":"+PAD2(tm)+":"+PAD2(ts);
-			}
+
+		var clips = data.clips.filter(function(d){return d.vod != null;});
+		var clipset = {};
+		clips.forEach(function(d,i){ clipset[d.slug] = 1; });
+
+		d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period=day&trending=true&limit=100")
+			.header("Accept", "application/vnd.twitchtv.v5+json")
+			.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
+			.response(function(xhr) { return JSON.parse(xhr.responseText); })
+			.get(function(err2,data2){
+
+				clips = clips.concat(data2.clips.filter(function(d){return d.vod != null && clipset[d.slug] != 1;}));
+
+				clips.forEach(function(d,i){
+					if (d.vod) {
+						var timestamp = d.vod.url.split("t=")[1];
+						var th = timestamp.match(/((\d+)h)/); if (th && th.length > 2) th = +th[2]; else th = 0
+						var tm = timestamp.match(/((\d+)m)/); if (tm && tm.length > 2) tm = +tm[2]; else tm = 0
+						var ts = timestamp.match(/((\d+)s)/); if (ts && ts.length > 2) ts = +ts[2]; else ts = 0
+						d.vod.th = th;
+						d.vod.tm = tm;
+						d.vod.ts = ts;
+						d.vod.timestamp = PAD2(th)+":"+PAD2(tm)+":"+PAD2(ts);
+					}
+				});
+
+				var CLIPNEST = d3.nest()
+									.sortValues(function(a,b) { return a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
+									.entries(clips);
+				
+				var CLIPMAIN = d3.select("#CLIPMAIN");
+				var CLIPNAV = d3.select("#CLIPNAV");
+				var CLIPUL = CLIPNAV.append("ol").classed("CLIPUL",true);
+				CLIPNEST.forEach(function(d,i){
+					//CLIPLI.append("div").text(d.title);
+					if (d.vod) {
+						var CLIPLI = CLIPUL.append("li").attr("value",d.views).on("click",function(clip){ CLIPMAIN.html(d.embed_html); });
+						CLIPLI.append("img").attr("src",d.thumbnails.tiny).style("vertical-align","middle");
+						CLIPLI.append("span").text(" [" + d.vod.timestamp + "] " + d.title);
+					}
+				});
+				
+				// console.log(CLIPNEST, CLIPNEST[0]);
 		});
-		var CLIPNEST = d3.nest()
-							.sortValues(function(a,b) { return a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
-							.entries(data.clips.filter(function(d){return d.vod != null;}))
-		
-		var CLIPMAIN = d3.select("#CLIPMAIN");
-		var CLIPNAV = d3.select("#CLIPNAV");
-		var CLIPUL = CLIPNAV.append("ul").classed("CLIPUL",true);
-		CLIPNEST.forEach(function(d,i){
-			//CLIPLI.append("div").text(d.title);
-			if (d.vod) {
-				var CLIPLI = CLIPUL.append("li").on("click",function(clip){ CLIPMAIN.html(d.embed_html); });
-				CLIPLI.append("img").attr("src",d.thumbnails.tiny).style("vertical-align","middle");
-				CLIPLI.append("span").text(" [" + d.vod.timestamp + "] " + d.title);
-			}
-		});
-		console.log(CLIPNEST);
 });
 
 
