@@ -114,7 +114,7 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period
 				});
 
 				var CLIPNEST = d3.nest()
-									.sortValues(function(a,b) { return a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
+									.sortValues(function(a,b) { return a.vod.id < b.vod.id ? -1 :  a.vod.id > b.vod.id ? 1 : a.vod.timestamp < b.vod.timestamp ? -1 :  a.vod.timestamp > b.vod.timestamp ? 1 : 0; })
 									.entries(clips);
 				
 				var CLIPMAIN = d3.select("#CLIPMAIN");
@@ -129,7 +129,7 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period
 					}
 				});
 				
-				// console.log(CLIPNEST, CLIPNEST[0]);
+				console.log(CLIPNEST, CLIPNEST[0]);
 		});
 });
 
