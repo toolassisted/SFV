@@ -71,6 +71,24 @@
 		.UNOC {
 			display: none;
 		}
+		.CLIPLI {
+			display: inline-flex;
+			align-items: center;
+			vertical-align: middle;
+		}
+		.CLIPLI img {
+			vertical-align: middle;
+		}
+		.CLIPLI time {
+			padding-left: 0.5em;
+			font-size: small;
+			color: #999;
+		}
+		.CLIPLI span {
+			padding-left: 0.5em;
+			font-size: small;
+			line-height: 1.5em;
+		}
 	</style>
 </head>
 <body>
@@ -118,14 +136,17 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=eleaguetv&period=day&
 									.entries(clips);
 				
 				var CLIPMAIN = d3.select("#CLIPMAIN");
+				var CLIPDIV = d3.select("#CLIPDIV");
 				var CLIPNAV = d3.select("#CLIPNAV");
 				var CLIPUL = CLIPNAV.append("ol").classed("CLIPUL",true);
 				CLIPNEST.forEach(function(d,i){
 					//CLIPLI.append("div").text(d.title);
 					if (d.vod) {
-						var CLIPLI = CLIPUL.append("li").attr("value",d.views).on("click",function(clip){ CLIPMAIN.html(d.embed_html); }).style("max-width","40em");
-						CLIPLI.append("img").attr("src",d.thumbnails.tiny).style("vertical-align","middle");
-						CLIPLI.append("span").text(" [" + d.vod.timestamp + "] " + d.title);
+						var CLIPLI = CLIPUL.append("li").attr("value",d.views).on("click",function(clip){ CLIPDIV.html(d.embed_html); }).style("max-width","40em");
+						var CLIPLIDIV = CLIPLI.append("div").classed("CLIPLI", true);
+						CLIPLIDIV.append("img").attr("src",d.thumbnails.tiny);//.style("vertical-align","middle");
+						CLIPLIDIV.append("time").text("[" + d.vod.timestamp + "]");
+						CLIPLIDIV.append("span").text(d.title);
 					}
 				});
 				
