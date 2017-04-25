@@ -110,7 +110,7 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=jchensor&period=day&t
 		var clipset = {};
 		clips.forEach(function(d,i){ clipset[d.slug] = 1; });
 
-		d3.request("https://api.twitch.tv/jchensor/clips/top?channel=eleaguetv&period=day&trending=true&limit=100")
+		d3.request("https://api.twitch.tv/kraken/clips/top?channel=jchensor&period=day&trending=true&limit=100")
 			.header("Accept", "application/vnd.twitchtv.v5+json")
 			.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
 			.response(function(xhr) { return JSON.parse(xhr.responseText); })
