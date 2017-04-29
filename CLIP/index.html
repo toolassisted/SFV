@@ -93,14 +93,14 @@
 </head>
 <body>
 <nav id="CLIPNAV" class="CLIPNAV"></nav>
-<main id="CLIPMAIN">U C <a href="https://www.twitch.tv/jchensor/clips">https://www.twitch.tv/jchensor/clips</a> TOP 24H + TREND SORT TIME
+<main id="CLIPMAIN">U C <a href="https://www.twitch.tv/capcomfighters/clips">https://www.twitch.tv/capcomfighters/clips</a> TOP 24H + TREND SORT TIME
 <div id="CLIPDIV"></div>
 </main>
 <script type="text/javascript">
 if (!Element.prototype.scrollIntoViewIfNeeded) Element.prototype.scrollIntoViewIfNeeded = Element.prototype.scrollIntoView;
 var PAD2 = d3.format("02");
 var PAD3 = d3.format("03");
-d3.request("https://api.twitch.tv/kraken/clips/top?channel=jchensor&period=day&trending=false&limit=100")
+d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period=day&trending=false&limit=100")
 	.header("Accept", "application/vnd.twitchtv.v5+json")
 	.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
 	.response(function(xhr) { return JSON.parse(xhr.responseText); })
@@ -110,7 +110,7 @@ d3.request("https://api.twitch.tv/kraken/clips/top?channel=jchensor&period=day&t
 		var clipset = {};
 		clips.forEach(function(d,i){ clipset[d.slug] = 1; });
 
-		d3.request("https://api.twitch.tv/kraken/clips/top?channel=jchensor&period=day&trending=true&limit=100")
+		d3.request("https://api.twitch.tv/kraken/clips/top?channel=capcomfighters&period=day&trending=true&limit=100")
 			.header("Accept", "application/vnd.twitchtv.v5+json")
 			.header("Client-ID", "xwbx1imddgs8r2hwq107btggkp5dos")
 			.response(function(xhr) { return JSON.parse(xhr.responseText); })
